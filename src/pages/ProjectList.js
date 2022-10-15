@@ -14,7 +14,7 @@ const ProjectList = () => {
 
   useEffect(() => {
     getProjects();
-  }, []);
+  }, []); // useCallback para resolver a "reclamação";
 
   const handleError = (error) => {
     setError(error);

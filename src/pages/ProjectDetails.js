@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 import api from '../api/pm.api';
 
@@ -11,19 +11,30 @@ const ProjectDetails = () => {
   const [error, setError] = useState('');
 
   const { projectId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.getOneProject(projectId)
       .then((result) => {
         setProject(result);
       })
-      .catch((error) => {
-        setError(error);
-        setTimeout(() => {
-          setError('');
-        }, 5000);
-      })
+      .catch((error) => handleError(error));
   }, [projectId]);
+
+  const handleRemove = () => {
+    api.removeProject(projectId)
+      .then(() => {
+        navigate('/projects');
+      })
+      .catch(error => handleError(error))
+  }
+
+  const handleError = (error) => {
+    setError(error);
+    setTimeout(() => {
+      setError('');
+    }, 5000)
+  }
 
   return (
     <div>
@@ -32,6 +43,7 @@ const ProjectDetails = () => {
         <>
           <h1>{project.title}</h1>
           <p>{project.description}</p>
+          <button onClick={handleRemove}>delete this project</button>
           <ul>
             {project.tasks.map((task) => {
               return (
@@ -44,6 +56,9 @@ const ProjectDetails = () => {
             })}
           </ul>
 
+          <Link to={`/projects/${projectId}/edit`}>
+            <button>Edit this project</button>
+          </Link>
           <Link to='/projects'>
             <button>Back to projects</button>
           </Link>
