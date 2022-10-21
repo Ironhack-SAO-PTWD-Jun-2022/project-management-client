@@ -54,7 +54,15 @@ class ProjectManagerApi {
     } catch (error) {
       throw error.message || error;
     }
+  }
 
+  signup = async ({ username, email, password }) => {
+    try {
+      const { data } = await this.api.post('/auth/signup', {username, email, password});
+      return data;
+    } catch (error) {
+      throw error.message || error;
+    }
   }
 }
 

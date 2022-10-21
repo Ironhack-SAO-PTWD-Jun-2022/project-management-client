@@ -5,12 +5,12 @@ const RedBox = styled.div`
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: #ed9a9a;
+  background-color: ${(props) => props.status === 'error' ? '#ed9a9a' : '#9aed9a'};
 `;
 
-const Alert = ({children}) => {
+const Alert = ({children, status = 'error'}) => {
   return (
-    <RedBox>
+    <RedBox status={status}>
       {children}
     </RedBox>
   )
