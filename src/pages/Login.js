@@ -1,27 +1,28 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/pm.api';
 
+import { AuthContext } from '../context/auth.context';
+
 import Alert from '../components/Alert';
 
-const Signup = () => {
-  const [username, setUsername] = useState('');
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+
+  const {authenticateUser} = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const newUser = await api.signup({password, username, email});
-      handleSuccess(`User ${newUser.username} created!`); // snackbar
-      setUsername('');
+      await api.login({password, email});
       setEmail('');
       setPassword('');
-      navigate('/login');
+      authenticateUser();
+      navigate('/');
     } catch (error) {
       handleError(error) // snackbar
     }
@@ -33,24 +34,12 @@ const Signup = () => {
       setError('');
     }, 15000)
   }
-  
-  const handleSuccess = (msg) => {
-    setSuccess(msg);
-    setTimeout(() => {
-      setSuccess('');
-    }, 15000)
-  }
 
   return (
     <div>
       {error && <Alert>{error}</Alert>}
-      {success && <Alert status='success'>{success}</Alert>}
-      <h1>Signup</h1>
+      <h1>Login</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor='username'>Username:</label>
-          <input id='username' type='text' value={username} onChange={(e) => setUsername(e.target.value)} />
-        </div>
         <div>
           <label htmlFor='email'>Email:</label>
           <input id='email' type='email' value={email} onChange={({ target }) => setEmail(target.value)} />
@@ -66,4 +55,4 @@ const Signup = () => {
   )
 }
 
-export default Signup
+export default Login

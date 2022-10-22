@@ -1,11 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
 
+import PrivateRoute from './components/PrivateRoute';
+import AnonymousRoute from './components/AnonymousRoute';
+
 import Navbar from './components/Navbar';
 import HomePage from './pages/Home';
 import ProjectListPage from './pages/ProjectList';
 import ProjectDetailsPage from './pages/ProjectDetails';
 import EditProjectPage from './pages/EditProject';
 import SignupPage from './pages/Signup';
+import LoginPage from './pages/Login';
 
 function App() {
   return (
@@ -13,10 +17,11 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='/projects' element={<ProjectListPage />} />
-        <Route path='/projects/:projectId' element={<ProjectDetailsPage />} />
-        <Route path='/projects/:projectId/edit' element={<EditProjectPage />} />
-        <Route path='/signup' element={<SignupPage />} />
+        <Route path='/projects' element={<PrivateRoute><ProjectListPage /></PrivateRoute>} />
+        <Route path='/projects/:projectId' element={<PrivateRoute><ProjectDetailsPage /></PrivateRoute>} />
+        <Route path='/projects/:projectId/edit' element={<PrivateRoute><EditProjectPage /></PrivateRoute>} />
+        <Route path='/signup' element={<AnonymousRoute><SignupPage /></AnonymousRoute>} />
+        <Route path='/login' element={<AnonymousRoute><LoginPage /></AnonymousRoute>} />
       </Routes>
     </div>
   );
