@@ -20,6 +20,7 @@ const Navbar = () => {
           {isLoggedIn && (
             <>
               <li><NavLink to='/projects'>Projects</NavLink></li>
+              <li><NavLink to='/profile'>Profile</NavLink></li>
               <li><button onClick={logoutUser}>Logout</button></li>
             </>
           )}

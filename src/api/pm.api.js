@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { storeToken } from '../utils/token.utils';
+import { storeToken, getToken } from '../utils/token.utils';
 
 const baseURL = process.env.REACT_APP_API_URI || 'http://localhost:5005';
 
-const getToken = () => {
-  return localStorage.getItem('token');
+const handleError = (error) => {
+  throw error.response.data || error.message || error;
 }
+
 class ProjectManagerApi {
   constructor (baseURL) {
     this.api = axios.create({ baseURL });
@@ -21,7 +22,7 @@ class ProjectManagerApi {
       });
       return data;
     } catch (error) {
-      throw error.message || error;
+      handleError(error);
     }
   }
 
@@ -30,7 +31,7 @@ class ProjectManagerApi {
       const { data } = await this.api.get(`/projects/${projectId}`);
       return data;
     } catch (error) {
-      throw error.message || error;
+      handleError(error);
     }
   }
 
@@ -38,7 +39,7 @@ class ProjectManagerApi {
     try {
       await this.api.post('/projects', {title, description})
     } catch (error) {
-      throw error.message || error;
+      handleError(error);
     }
   }
 
@@ -46,7 +47,7 @@ class ProjectManagerApi {
     try {
       await this.api.put(`/projects/${projectId}`, values);
     } catch (error) {
-      throw error.message || error;
+      handleError(error);
     }
   }
 
@@ -54,7 +55,7 @@ class ProjectManagerApi {
     try {
       await this.api.delete(`/projects/${projectId}`);
     } catch (error) {
-      throw error.message || error;
+      handleError(error);
     }
   }
 
@@ -62,7 +63,7 @@ class ProjectManagerApi {
     try {
       await this.api.post('/tasks', {title, description, projectId});
     } catch (error) {
-      throw error.message || error;
+      handleError(error);
     }
   }
 
@@ -71,7 +72,7 @@ class ProjectManagerApi {
       const { data } = await this.api.post('/auth/signup', {username, email, password});
       return data;
     } catch (error) {
-      throw error.response.data || error.message || error;
+      handleError(error);
     }
   }
 
@@ -80,7 +81,7 @@ class ProjectManagerApi {
       const { data } = await this.api.post('/auth/login', {email, password});
       storeToken(data.token);
     } catch (error) {
-      throw error.response.data || error.message || error;
+      handleError(error);
     }
   }
 
@@ -93,7 +94,35 @@ class ProjectManagerApi {
       });
       return data;
     } catch (error) {
-      throw error.response.data || error.message || error;
+      handleError(error);
+    }
+  }
+
+  getProfile = async () => {
+    const token = getToken();
+    try {
+      const { data } = await this.api.get('/users/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      return data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  uploadProfileImage = async (formData) => {
+    const token = getToken();
+    try {
+      const { data } = await this.api.post('/users/upload', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      return data;
+    } catch (error) {
+      handleError(error);
     }
   }
 }
