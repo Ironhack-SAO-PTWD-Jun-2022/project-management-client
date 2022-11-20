@@ -17,12 +17,8 @@ const AuthProviderWrapper = (props) => {
   }
 
   const authenticateUser = async () => {
-    const storedToken = localStorage.getItem('token');
     try {
-      if(!storedToken) {
-        throw new Error();
-      }
-      const response = await api.verify(storedToken);
+      const response = await api.verify();
       setIsLoggedIn(true);
       setUser(response);
     } catch (error) {

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../api/pm.api';
 
-import Loading from '../components/Loading';
-
-const Profile = () => {
-  // const [profile, setProfile] = useState(null);
-  const [image, setImage] = useState(null);
+const EditProfile = () => {
+  const [image, setImage] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.getProfile()
@@ -16,52 +16,43 @@ const Profile = () => {
         setUsername(response.username);
         setEmail(response.email);
       })
-      .catch((error) => window.alert(error));
+      .catch((error) => {
+        window.alert(error);
+      });
   }, [])
-
-  const handleUsername = (e) => setUsername(e.target.value);
-  const handleEmail = (e) => setEmail(e.target.value);
-  const handleImage = (e) => setImage(e.target.files[0]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(username, email, image);
+    const formData = new FormData();
     try {
-      const uploadData = new FormData();
-      uploadData.append('imageUrl', image);
-      uploadData.append('username', username);
-      uploadData.append('email', email);
-      const response = await api.uploadProfileImage(uploadData);
+      formData.append('imageUrl', image);
+      formData.append('username', username);
+      formData.append('email', email);
+      const response = await api.updateProfile(formData);
       window.alert(response);
+      navigate('/profile');
     } catch (error) {
       window.alert(error);
     }
   }
 
-
   return (
     <form onSubmit={handleSubmit}>
-      <h1>Editar perfil</h1>
-      {username || email ? (
-        <>
-          <div>
-            <label>Username</label>
-            <input type='text' value={username} onChange={handleUsername} />
-          </div>
-          <div>
-            <label>Email</label>
-            <input type='email' value={email} onChange={handleEmail} />
-          </div>
-          <div>
-            <input type='file' onChange={handleImage} />
-          </div>
-          <button type='submit'>Save</button>
-        </>
-      ) : (
-        <Loading />
-      )}
+      <div>
+        {/* <img src={profile.profileImageUrl} alt='profile' /> */}
+        <input type='file' onChange={(e) => setImage(e.target.files[0])} />
+      </div>
+      <div>
+        <label>Username: </label>
+        <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} />
+      </div>
+      <div>
+        <label>Email: </label>
+        <input type='text' value={email} onChange={(e) => setEmail(e.target.value)} />
+      </div>
+      <button type='submit'>Save</button>
     </form>
   )
 }
 
-export default Profile;
+export default EditProfile

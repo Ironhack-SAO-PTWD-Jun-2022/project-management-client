@@ -10,16 +10,22 @@ const handleError = (error) => {
 class ProjectManagerApi {
   constructor (baseURL) {
     this.api = axios.create({ baseURL });
+    this.api.interceptors.request.use((config) => {
+      const storedToken = getToken();
+
+      if(storedToken) {
+        config.headers = {
+          Authorization: `Bearer ${storedToken}`,
+        }
+      }
+
+      return config;
+    })
   }
 
   getProjects = async () => {
-    const token = getToken();
     try {
-      const { data } = await this.api.get('/projects', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const { data } = await this.api.get('/projects');
       return data;
     } catch (error) {
       handleError(error);
@@ -85,13 +91,9 @@ class ProjectManagerApi {
     }
   }
 
-  verify = async (token) => {
+  verify = async () => {
     try {
-      const { data } = await this.api.get('/auth/verify', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      const { data } = await this.api.get('/auth/verify');
       return data;
     } catch (error) {
       handleError(error);
@@ -99,27 +101,17 @@ class ProjectManagerApi {
   }
 
   getProfile = async () => {
-    const token = getToken();
     try {
-      const { data } = await this.api.get('/users/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      const { data } = await this.api.get('/users/profile');
       return data;
     } catch (error) {
       handleError(error);
     }
   }
 
-  uploadProfileImage = async (formData) => {
-    const token = getToken();
+  updateProfile = async (formValues) => {
     try {
-      const { data } = await this.api.post('/users/upload', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      const { data } = await this.api.post('/users/upload', formValues);
       return data;
     } catch (error) {
       handleError(error);

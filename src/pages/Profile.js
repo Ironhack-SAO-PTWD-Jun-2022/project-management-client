@@ -10,8 +10,12 @@ const Profile = () => {
 
   useEffect(() => {
     api.getProfile()
-      .then((response) => setProfile(response))
-      .catch((error) => window.alert(error));
+      .then((response) => {
+        setProfile(response);
+      })
+      .catch((error) => {
+        window.alert(error);
+      });
   }, [])
 
   return (
@@ -22,14 +26,12 @@ const Profile = () => {
             <img src={profile.profileImageUrl} alt='profile' />
           </div>
           <h2>Bem vindo, {profile.username}</h2>
-          <p>Seu email: {profile.email}</p>
-          <Link to='/profile/edit'>Edit</Link>
+          <p>E-mail: {profile.email}</p>
+          <Link to='/profile/edit'><button>Editar</button></Link>
         </>
-      ) : (
-        <Loading />
-      )}
+      ) : <Loading />}
     </div>
   )
 }
 
-export default Profile;
+export default Profile

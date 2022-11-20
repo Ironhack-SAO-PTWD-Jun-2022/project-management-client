@@ -26,6 +26,7 @@ function App() {
         <Route path='/profile/edit' element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
         <Route path='/signup' element={<AnonymousRoute><SignupPage /></AnonymousRoute>} />
         <Route path='/login' element={<AnonymousRoute><LoginPage /></AnonymousRoute>} />
+        <Route path='*' element={<h1>404 not found!</h1>} />
       </Routes>
     </div>
   );

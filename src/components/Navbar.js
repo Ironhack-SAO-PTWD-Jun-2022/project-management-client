@@ -6,15 +6,15 @@ const Navbar = () => {
   const { isLoggedIn, user, logoutUser } = useContext(AuthContext);
 
   return (
-    <div>
-      <h1>Project management</h1>
+    <div className="navbar bg-dark">
+      <h1 className="brand text-danger">Project management</h1>
       <div>
-        <ul>
-          <li><NavLink to='/'>Home</NavLink></li>
+        <ul className="d-flex">
+        <li className='nav-item'><NavLink to='/' className="nav-link text-light">Home</NavLink></li>
           {!isLoggedIn && (
             <>
-              <li><NavLink to='/signup'>Signup</NavLink></li>
-              <li><NavLink to='/login'>Login</NavLink></li>
+              <li className="btn btn-light"><NavLink to='/signup'>Signup</NavLink></li>
+              <li><NavLink to='/login' className="nav-link text-light">Login</NavLink></li>
             </>
           )}
           {isLoggedIn && (
